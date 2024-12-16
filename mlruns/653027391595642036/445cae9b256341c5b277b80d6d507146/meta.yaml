@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/653027391595642036/445cae9b256341c5b277b80d6d507146/artifacts
+end_time: 1734358808170
+entry_point_name: ''
+experiment_id: '653027391595642036'
+lifecycle_stage: active
+run_id: 445cae9b256341c5b277b80d6d507146
+run_name: diabetes_RForest_15
+run_uuid: 445cae9b256341c5b277b80d6d507146
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1734358806567
+status: 3
+tags: []
+user_id: mmby
