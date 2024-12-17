@@ -13,3 +13,10 @@ pip install virtualenv
 mlflow models serve -m 'runs:/run_id/model' -p 5011
 
 curl -X POST -H "Content-Type: application/json" -d '{data}' http://localhost:5001/invocations
+
+# Install conda ubuntu
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+bash Miniconda3-latest-Linux-x86_64.sh
+
+~/miniconda3/bin/conda init
