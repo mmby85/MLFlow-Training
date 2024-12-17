@@ -10,4 +10,6 @@ exec "$SHELL"
 
 pip install virtualenv
 
-mlflow models serve -m 'runs:/run_id/model' -p 5005
+mlflow models serve -m 'runs:/run_id/model' -p 5011
+
+curl -X POST -H "Content-Type: application/json" -d '{data}' http://localhost:5001/invocations
