@@ -2,3 +2,4 @@ mlflow
 boto3
 virtualenv
 seaborn
+sagemaker
