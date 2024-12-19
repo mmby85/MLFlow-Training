@@ -69,11 +69,11 @@ mlflow.set_experiment(experiment_name)
 
 # mlflow.set_tracking_uri('http://13.61.136.59:5000/')
 
-random_state=500
+random_state=50
 
 for n_estimators in [50, 55]:
     
-    with mlflow.start_run(run_name=f"diabetes_RForest_{n_estimators}"):
+    with mlflow.start_run(run_name=f"Avec_input_diabetes_RForest_{n_estimators}"):
 
         model = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
         model.fit(X_train, y_train)
