@@ -385,3 +385,90 @@ def objective(trial):
     y_pred = model.predict(X_test)
     return accuracy_score(y_test, y_pred)
 ```
+
+# Exemple Final
+
+```
+import optuna
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.datasets import load_iris  # Exemple de jeu de données
+import logging
+
+# Configuration du logging pour mieux comprendre le déroulement de l'optimisation
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+def objective(trial):
+    """
+    Fonction objective pour l'optimisation des hyperparamètres des classifieurs.
+
+    Args:
+        trial (optuna.Trial): Objet Optuna représentant un essai.
+
+    Returns:
+        float: Score d'exactitude du classifieur sur l'ensemble de test.
+    """
+    logging.info(f"Début de l'essai : {trial.number}")
+
+    # Choix du classifieur
+    classifier_name = trial.suggest_categorical("classifier", ["SVC", "LogisticRegression", "RandomForest"])
+    logging.info(f"Classifieur choisi: {classifier_name}")
+
+    # Paramétrage du classifieur
+    if classifier_name == "SVC":
+        svc_c = trial.suggest_float("svc_c", 0.1, 10, log=True)
+        model = SVC(C=svc_c, random_state=42) # Ajout du random_state pour la reproductibilité
+        logging.info(f"  - Paramètres SVC: C = {svc_c}")
+
+    elif classifier_name == "LogisticRegression":
+        lr_c = trial.suggest_float("lr_c", 0.1, 10, log=True)
+        model = LogisticRegression(C=lr_c, random_state=42, solver='liblinear') # Ajout du random_state et du solver
+        logging.info(f"  - Paramètres LogisticRegression: C = {lr_c}")
+
+    elif classifier_name == "RandomForest":
+        rf_n_estimators = trial.suggest_int("rf_n_estimators", 100, 500)
+        model = RandomForestClassifier(n_estimators=rf_n_estimators, random_state=42) # Ajout du random_state
+        logging.info(f"  - Paramètres RandomForest: n_estimators = {rf_n_estimators}")
+
+
+    # Chargement et séparation des données (Iris dataset pour l'exemple)
+    iris = load_iris()
+    X, y = iris.data, iris.target
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) #random_state ajouté pour reproductibilité
+
+    # Entraînement du modèle
+    model.fit(X_train, y_train)
+    logging.info(f"  - Modèle entraîné")
+
+    # Prédiction et évaluation
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+
+    logging.info(f"  - Score d'exactitude: {accuracy:.4f}")
+    logging.info(f"Fin de l'essai: {trial.number}")
+    return accuracy
+
+
+if __name__ == "__main__":
+    # Création de l'étude Optuna
+    study = optuna.create_study(direction="maximize")  # On maximise l'accuracy
+
+    # Lancement de l'optimisation
+    n_trials = 50 # Nombre d'essais
+    logging.info(f"Lancement de l'optimisation avec {n_trials} essais...")
+    study.optimize(objective, n_trials=n_trials)
+
+    # Affichage des meilleurs résultats
+    best_trial = study.best_trial
+    print("\nMeilleur essai:")
+    print(f"  Score d'exactitude: {best_trial.value:.4f}")
+    print("  Paramètres:")
+    for key, value in best_trial.params.items():
+        print(f"    {key}: {value}")
+
+    logging.info("Optimisation terminée.")
+```
